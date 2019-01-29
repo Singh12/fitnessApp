@@ -4,23 +4,3 @@ mat-sidenav-container {
 mat-sidenav {
     width: 250px;
 }
-a {
-    color: #fff;
-    text-decoration: none;
-}
-a:hover,
-a:focus {
-    color: lightgray;
-}
-.navigation-item {
-    list-style: none;
-    padding: 0px;
-    margin: 0px;
-}
-span.navgation_icon {
-    padding-left: 6px;
-    display: inline-block;
-    /* margin-bottom: 7px; */
-    position: relative;
-    top: -7px;
-}

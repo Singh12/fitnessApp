@@ -1,0 +1,13 @@
+a {
+    color: #fff;
+    text-decoration: none;
+}
+a:hover,
+a:focus {
+    color: lightgray;
+}
+.navigation-item {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+}

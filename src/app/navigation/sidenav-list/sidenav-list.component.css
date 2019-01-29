@@ -1,0 +1,16 @@
+a {
+    color: #fff;
+    text-decoration: none;
+}
+a:hover,
+a:focus {
+    color: lightgray;
+}
+
+span.navgation_icon {
+    padding-left: 6px;
+    display: inline-block;
+    /* margin-bottom: 7px; */
+    position: relative;
+    top: -7px;
+}
