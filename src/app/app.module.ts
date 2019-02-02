@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { AngularFireModule } from 'angularfire2';
-import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFirestoreModule, FirestoreSettingsToken } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
@@ -50,7 +50,7 @@ import { environment } from '../environments/environment';
     AngularFireAuthModule,
     BrowserAnimationsModule
   ],
-  providers: [AngularFirestoreModule, TrainingService, AuthService, AuthGuard],
+  providers: [AngularFirestoreModule, TrainingService, AuthService, AuthGuard, { provide: FirestoreSettingsToken, useValue: {} }],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })

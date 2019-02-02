@@ -4,11 +4,15 @@
       <input matInput type="text" placeholder="user name" formControlName="email">
       <mat-error>Email is not valid</mat-error>
     </mat-form-field>
-   <mat-form-field>
+   <mat-form-field *ngIf="!forgetPasswords">
       <input type="password" matInput placeholder="Enter Password" formControlName="password">
       <mat-error>Password is not valid</mat-error>
    </mat-form-field>
+   <div gdColumns="50% 50%"  fxLayoutGap="20px">
+    <button  type="submit" mat-raised-button color="accent" [disabled]="!myGroup.valid">Submit</button>
+    <a color="accent" (click)="forgetPassword()"  fxLayoutAlign="center center" style="cursor:pointer" *ngIf="!forgetPasswords">Forget Password</a>
+   </div>
   
-    <button type="submit" mat-raised-button color="accent" [disabled]="!myGroup.valid">Submit</button>
   </form>
+
 </section>
