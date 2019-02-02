@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FlexLayoutModule} from '@angular/flex-layout';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule, FirestoreSettingsToken } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -23,6 +23,7 @@ import { StopTrainingComponent } from './training/current-training/stop-training
 import { AuthGuard } from './auth/auth.gard';
 import { TrainingService } from './training/training.service';
 import { environment } from '../environments/environment';
+import { UiService } from './shaired/ui.service';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,12 @@ import { environment } from '../environments/environment';
     AngularFireAuthModule,
     BrowserAnimationsModule
   ],
-  providers: [AngularFirestoreModule, TrainingService, AuthService, AuthGuard, { provide: FirestoreSettingsToken, useValue: {} }],
+  providers: [AngularFirestoreModule,
+    TrainingService,
+    AuthService,
+    AuthGuard,
+    UiService,
+    { provide: FirestoreSettingsToken, useValue: {} }],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })

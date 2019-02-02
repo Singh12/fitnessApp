@@ -1,5 +1,5 @@
 <section fxLayoutAlign="center center"  fxLayoutGap="10px">
-  <form (ngSubmit)="formSubmit()" fxLayout="column" fxFlex="350px" [formGroup]="myGroup"> 
+  <form (ngSubmit)="formSubmit()"  fxLayout="column" fxFlex="350px" [formGroup]="myGroup"> 
     <mat-form-field>
       <input matInput type="text" placeholder="user name" formControlName="email">
       <mat-error>Email is not valid</mat-error>
@@ -8,11 +8,11 @@
       <input type="password" matInput placeholder="Enter Password" formControlName="password">
       <mat-error>Password is not valid</mat-error>
    </mat-form-field>
-   <div gdColumns="50% 50%"  fxLayoutGap="20px">
+   <div gdColumns="50% 50%"  fxLayoutGap="20px" *ngIf="loadingBar">
     <button  type="submit" mat-raised-button color="accent" [disabled]="!myGroup.valid">Submit</button>
     <a color="accent" (click)="forgetPassword()"  fxLayoutAlign="center center" style="cursor:pointer" *ngIf="!forgetPasswords">Forget Password</a>
    </div>
-  
+   <mat-spinner *ngIf="!loadingBar" ></mat-spinner>
   </form>
 
 </section>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Subject } from 'rxjs';
+import { UiService } from '../../shaired/ui.service';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +12,9 @@ import { Subject } from 'rxjs';
 export class LoginComponent implements OnInit {
   myGroup: FormGroup;
   private forgetPasswords = false;
+  private loadingBar = true;
   forget = new Subject<boolean>();
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private uiService: UiService) { }
 
   ngOnInit() {
     if (!this.forgetPasswords) {
@@ -30,6 +32,9 @@ export class LoginComponent implements OnInit {
     );
   }
   formSubmit() {
+    this.uiService.progressBarr.subscribe(
+      progress => this.loadingBar = progress
+    );
     if (!this.forgetPasswords) {
       this.authService.login({
         email: this.myGroup.value.email,
@@ -43,5 +48,4 @@ export class LoginComponent implements OnInit {
     this.forgetPasswords = true;
     this.forget.next(this.forgetPasswords);
   }
-
 }
