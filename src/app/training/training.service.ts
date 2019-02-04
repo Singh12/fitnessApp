@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { map } from 'rxjs/operators';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { UiService } from '../shaired/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -14,22 +15,27 @@ export class TrainingService {
     private fbSubscription: Subscription[] = [];
     private availableExcercises: Exercise[];
     private runningExercise: Exercise;
-    constructor(private db: AngularFirestore , private afAuth: AngularFireAuth) { }
+    constructor(private db: AngularFirestore , private afAuth: AngularFireAuth, private uiServices: UiService) { }
     fetchAvailableExcercise() {
+       this.uiServices.progressBarr.next(false);
        this.fbSubscription.push(this.db.collection('availableExercises').snapshotChanges()
             .pipe(map(
-                (docArray) => docArray.map(doc => {
+                (docArray) => {
+                   return docArray.map(doc => {
                     return {
                         id: doc.payload.doc.id,
                         ...doc.payload.doc.data()
-                    };
-                })
-            )).subscribe(
+                   };
+                });
+                })).subscribe(
                 (result: Exercise[]) => {
+                    this.uiServices.progressBarr.next(true);
                     this.availableExcercises = result;
                     this.exercisesChanged.next([...result]);
-                }, error => { }
-            ));
+            }, (error) => {
+                this.uiServices.progressBarr.next(true);
+                this.uiServices.showSnackBar('Fetching Excercise failed, please try again later', null, 3000);
+    }));
     }
     startExercise(selectedId: string) {
         this.runningExercise = this.availableExcercises.find(ex => ex.id === selectedId);
@@ -71,7 +77,10 @@ export class TrainingService {
             (exercise: Exercise[]) => {
               const userExercise = exercise.filter(el => el.uuid === this.userUuid);
                 this.finishedExercisesChanged.next(userExercise);
-            }, error => { }));
+           }, (error) => {
+               this.uiServices.showSnackBar('Fetching Excercise failed, please try again later', null, 3000);
+           }
+        ));
     }
     private addDatatoDatabase(exercise: Exercise) {
         this.db.collection('finishedExercise').add(exercise);

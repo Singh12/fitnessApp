@@ -1,7 +1,7 @@
 import { User } from './user.model';
 import { AuthData } from './auth-data.model';
-import { Subject } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { auth } from 'firebase';
@@ -9,14 +9,14 @@ import { TrainingService } from '../training/training.service';
 import { MatSnackBar } from '@angular/material';
 import { UiService } from '../shaired/ui.service';
 @Injectable()
-export class AuthService {
+export class AuthService implements OnDestroy {
     private user: User;
+    userSub: Subscription;
     autValidation = new Subject<boolean>();
     private isAuthenticated = false;
     constructor(private router: Router,
         private afAuth: AngularFireAuth,
         private trainingService: TrainingService,
-        private snackBar: MatSnackBar,
         private uiService: UiService) { }
     registerUser(authData: AuthData) {
         this.uiService.progressBarr.next(false);
@@ -27,18 +27,17 @@ export class AuthService {
             this.uiService.progressBarr.next(true);
         }).catch(error => {
             this.uiService.progressBarr.next(true);
-            this.snackBar.open(error.message, null, {
-                duration: 4000,
-            });
+            this.uiService.showSnackBar(error.message, null, 3000);
         });
     }
     // Univarsal setup for login or log out button
 
     authLoginLogout() {
-        this.afAuth.idToken.subscribe(
-            //  id => console.log(id)
-        );
-        this.afAuth.user.subscribe(
+        // To get user Id
+        // this.afAuth.idToken.subscribe(
+        //     //  id => console.log(id)
+        // );
+        this.userSub = this.afAuth.user.subscribe(
             (user) => {
                 if (user) {
                     this.isAuthenticated = true;
@@ -60,9 +59,7 @@ export class AuthService {
             this.uiService.progressBarr.next(true);
         }).catch(error => {
             this.uiService.progressBarr.next(true);
-            this.snackBar.open(error.message, null, {
-                duration: 4000,
-            });
+            this.uiService.showSnackBar(error.message, null, 3000);
         });
     }
     forgetPassword(email: string) {
@@ -77,5 +74,10 @@ export class AuthService {
     }
     isAuth() {
         return this.isAuthenticated;
+    }
+    ngOnDestroy() {
+        if (this.userSub) {
+            this.userSub.unsubscribe();
+        }
     }
 }

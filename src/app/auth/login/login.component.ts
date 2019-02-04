@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { UiService } from '../../shaired/ui.service';
 
 @Component({
@@ -9,21 +9,26 @@ import { UiService } from '../../shaired/ui.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   myGroup: FormGroup;
-  private forgetPasswords = false;
-  private loadingBar = true;
+  loadingSub: Subscription;
+  forgetSub: Subscription;
+  public forgetPasswords = false;
+  public loadingBar = true;
   forget = new Subject<boolean>();
   constructor(private authService: AuthService, private uiService: UiService) { }
 
   ngOnInit() {
+    this.loadingSub = this.uiService.progressBarr.subscribe(
+      progress => this.loadingBar = progress
+    );
     if (!this.forgetPasswords) {
       this.myGroup = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),
         password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       });
     }
-    this.forget.subscribe(
+    this.forgetSub = this.forget.subscribe(
       result => {
         this.myGroup = new FormGroup({
           email: new FormControl('', [Validators.required, Validators.email])
@@ -32,9 +37,6 @@ export class LoginComponent implements OnInit {
     );
   }
   formSubmit() {
-    this.uiService.progressBarr.subscribe(
-      progress => this.loadingBar = progress
-    );
     if (!this.forgetPasswords) {
       this.authService.login({
         email: this.myGroup.value.email,
@@ -47,5 +49,13 @@ export class LoginComponent implements OnInit {
   forgetPassword() {
     this.forgetPasswords = true;
     this.forget.next(this.forgetPasswords);
+  }
+  ngOnDestroy() {
+    if (this.loadingSub) {
+      this.loadingSub.unsubscribe();
+    }
+    if (this.forgetSub) {
+      this.forgetSub.unsubscribe();
+    }
   }
 }
