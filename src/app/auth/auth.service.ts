@@ -6,9 +6,10 @@ import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { TrainingService } from '../training/training.service';
 import { UiService } from '../shaired/ui.service';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import * as fromRoot from '../app.reducer';
 import * as UI from '../shaired/ui.action';
+import * as AUTH from '../auth.action';
 @Injectable()
 export class AuthService implements OnDestroy {
     private user: User;
@@ -42,14 +43,13 @@ export class AuthService implements OnDestroy {
         this.userSub = this.afAuth.user.subscribe(
             (user) => {
                 if (user) {
-                    this.isAuthenticated = true;
-                    this.autValidation.next(true);
+                    console.log(user);
+                    this.store.dispatch(new AUTH.Authenticated());
                     this.router.navigate(['/training']);
                 } else {
                     this.trainingService.fbUnsubscribe();
-                    this.autValidation.next(false);
+                    this.store.dispatch(new AUTH.Unauthenticated());
                     this.router.navigate(['/login']);
-                    this.isAuthenticated = false;
                 }
             }
         );
@@ -75,9 +75,7 @@ export class AuthService implements OnDestroy {
     logOut() {
         this.afAuth.auth.signOut();
     }
-    isAuth() {
-        return this.isAuthenticated;
-    }
+
     ngOnDestroy() {
         if (this.userSub) {
             this.userSub.unsubscribe();

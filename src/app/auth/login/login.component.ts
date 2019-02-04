@@ -22,9 +22,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
    this.loadingBar = this.action.select(formRoot.getisLoading);
-   this.loadingBar.subscribe(
-    (data) => console.log(data)
-   );
     if (!this.forgetPasswords) {
       this.myGroup = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),

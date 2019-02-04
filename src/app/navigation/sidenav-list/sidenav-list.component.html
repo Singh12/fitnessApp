@@ -1,23 +1,23 @@
 <mat-nav-list role="list">
-  <mat-list-item role="listitem" *ngIf="!authValidation">
+  <mat-list-item role="listitem" *ngIf="!(authValidation | async)">
     <a routerLink="/signup" (click)="onClose()">
       <mat-icon>face</mat-icon>
       <span class="navgation_icon">SignUp</span>
     </a>
   </mat-list-item>
-  <mat-list-item role="listitem" *ngIf="!authValidation">
+  <mat-list-item role="listitem" *ngIf="!(authValidation | async)">
     <a routerLink="/login" (click)="onClose()">
       <mat-icon>input</mat-icon>
       <span class="navgation_icon">Login</span>
     </a>
   </mat-list-item>
-  <mat-list-item role="listitem" *ngIf="authValidation">
+  <mat-list-item role="listitem" *ngIf="authValidation | async">
     <a routerLink="/training" (click)="onClose()">
       <mat-icon>fitness_center</mat-icon>
       <span class="navgation_icon">Training</span>
     </a>
   </mat-list-item>
-  <mat-list-item *ngIf="authValidation">
+  <mat-list-item *ngIf="authValidation | async">
     <button mat-icon-button (click)="onLogout()">
       <mat-icon>eject</mat-icon>
       <span class="navgation_icon">Logout</span>
