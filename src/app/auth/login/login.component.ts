@@ -4,7 +4,7 @@ import { AuthService } from '../auth.service';
 import { Subject, Subscription, Observable } from 'rxjs';
 import { UiService } from '../../shaired/ui.service';
 import { Store } from '@ngrx/store';
-import { State } from 'src/app/app.reducer';
+import * as formRoot from 'src/app/app.reducer';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -18,10 +18,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   public forgetPasswords = false;
   public loadingBar: Observable<boolean>;
   forget = new Subject<boolean>();
-  constructor(private authService: AuthService, private uiService: UiService, private action: Store<{ui: State}>) { }
+  constructor(private authService: AuthService, private uiService: UiService, private action: Store<formRoot.State>) { }
 
   ngOnInit() {
-   this.loadingBar = this.action.pipe(map(data => data.ui.isLoading ));
+   this.loadingBar = this.action.select(formRoot.getisLoading);
    this.loadingBar.subscribe(
     (data) => console.log(data)
    );

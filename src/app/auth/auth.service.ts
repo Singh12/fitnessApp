@@ -4,12 +4,11 @@ import { Subject, Subscription } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { auth } from 'firebase';
 import { TrainingService } from '../training/training.service';
-import { MatSnackBar } from '@angular/material';
 import { UiService } from '../shaired/ui.service';
 import { Action, Store } from '@ngrx/store';
-import * as formApp from '../app.reducer';
+import * as fromRoot from '../app.reducer';
+import * as UI from '../shaired/ui.action';
 @Injectable()
 export class AuthService implements OnDestroy {
     private user: User;
@@ -20,7 +19,7 @@ export class AuthService implements OnDestroy {
         private afAuth: AngularFireAuth,
         private trainingService: TrainingService,
         private uiService: UiService,
-        private store: Store<{ui: formApp.State}>) { }
+        private store: Store<fromRoot.State>) { }
     registerUser(authData: AuthData) {
         this.uiService.progressBarr.next(false);
         this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
@@ -57,12 +56,12 @@ export class AuthService implements OnDestroy {
     }
 
     login(authData: AuthData) {
-        this.store.dispatch({type: 'START_LOADING'});
+        this.store.dispatch(new UI.StartLoading());
        // this.uiService.progressBarr.next(false);
         this.afAuth.auth.signInWithEmailAndPassword(authData.email, authData.password).then(result => {
-            this.store.dispatch({type: 'STOP_LOADING'});
+            this.store.dispatch(new UI.StopLoading());
         }).catch(error => {
-            this.store.dispatch({type: 'STOP_LOADING'});
+            this.store.dispatch(new UI.StopLoading());
             this.uiService.showSnackBar(error.message, null, 3000);
         });
     }

@@ -19,8 +19,7 @@ import { environment } from '../environments/environment';
 import { UiService } from './shaired/ui.service';
 import { Authmodule } from './auth/auth.module';
 import { AuthRoutingModule } from './auth/auth-routing.module';
-import { TrainingRoutingModule } from './training/training-routing.module';
-import { appReducer } from './app.reducer';
+import { reducres } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -37,7 +36,7 @@ import { appReducer } from './app.reducer';
     Authmodule,
     AuthRoutingModule,
     AngularFirestoreModule,
-    StoreModule.forRoot({ui: appReducer}),
+    StoreModule.forRoot(reducres),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     BrowserAnimationsModule
   ],
