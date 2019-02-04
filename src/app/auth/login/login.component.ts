@@ -1,8 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 import { UiService } from '../../shaired/ui.service';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/app.reducer';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +14,17 @@ import { UiService } from '../../shaired/ui.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   myGroup: FormGroup;
-  loadingSub: Subscription;
   forgetSub: Subscription;
   public forgetPasswords = false;
-  public loadingBar = true;
+  public loadingBar: Observable<boolean>;
   forget = new Subject<boolean>();
-  constructor(private authService: AuthService, private uiService: UiService) { }
+  constructor(private authService: AuthService, private uiService: UiService, private action: Store<{ui: State}>) { }
 
   ngOnInit() {
-    this.loadingSub = this.uiService.progressBarr.subscribe(
-      progress => this.loadingBar = progress
-    );
+   this.loadingBar = this.action.pipe(map(data => data.ui.isLoading ));
+   this.loadingBar.subscribe(
+    (data) => console.log(data)
+   );
     if (!this.forgetPasswords) {
       this.myGroup = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),
@@ -51,9 +54,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.forget.next(this.forgetPasswords);
   }
   ngOnDestroy() {
-    if (this.loadingSub) {
-      this.loadingSub.unsubscribe();
-    }
     if (this.forgetSub) {
       this.forgetSub.unsubscribe();
     }

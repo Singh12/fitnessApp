@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AngularFireModule } from 'angularfire2';
+import { StoreModule } from '@ngrx/store';
+
 import { FirestoreSettingsToken, AngularFirestoreModule } from 'angularfire2/firestore';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
@@ -18,6 +20,7 @@ import { UiService } from './shaired/ui.service';
 import { Authmodule } from './auth/auth.module';
 import { AuthRoutingModule } from './auth/auth-routing.module';
 import { TrainingRoutingModule } from './training/training-routing.module';
+import { appReducer } from './app.reducer';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,7 @@ import { TrainingRoutingModule } from './training/training-routing.module';
     Authmodule,
     AuthRoutingModule,
     AngularFirestoreModule,
+    StoreModule.forRoot({ui: appReducer}),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     BrowserAnimationsModule
   ],

@@ -8,6 +8,8 @@ import { auth } from 'firebase';
 import { TrainingService } from '../training/training.service';
 import { MatSnackBar } from '@angular/material';
 import { UiService } from '../shaired/ui.service';
+import { Action, Store } from '@ngrx/store';
+import * as formApp from '../app.reducer';
 @Injectable()
 export class AuthService implements OnDestroy {
     private user: User;
@@ -17,7 +19,8 @@ export class AuthService implements OnDestroy {
     constructor(private router: Router,
         private afAuth: AngularFireAuth,
         private trainingService: TrainingService,
-        private uiService: UiService) { }
+        private uiService: UiService,
+        private store: Store<{ui: formApp.State}>) { }
     registerUser(authData: AuthData) {
         this.uiService.progressBarr.next(false);
         this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
@@ -54,11 +57,12 @@ export class AuthService implements OnDestroy {
     }
 
     login(authData: AuthData) {
-        this.uiService.progressBarr.next(false);
+        this.store.dispatch({type: 'START_LOADING'});
+       // this.uiService.progressBarr.next(false);
         this.afAuth.auth.signInWithEmailAndPassword(authData.email, authData.password).then(result => {
-            this.uiService.progressBarr.next(true);
+            this.store.dispatch({type: 'STOP_LOADING'});
         }).catch(error => {
-            this.uiService.progressBarr.next(true);
+            this.store.dispatch({type: 'STOP_LOADING'});
             this.uiService.showSnackBar(error.message, null, 3000);
         });
     }

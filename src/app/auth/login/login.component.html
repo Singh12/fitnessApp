@@ -8,11 +8,11 @@
       <input type="password" matInput placeholder="Enter Password" formControlName="password">
       <mat-error>Password is not valid</mat-error>
    </mat-form-field>
-   <div gdColumns="50% 50%"  fxLayoutGap="20px" *ngIf="loadingBar">
+   <div gdColumns="50% 50%"  fxLayoutGap="20px" *ngIf="!(loadingBar | async)">
     <button  type="submit" mat-raised-button color="accent" [disabled]="!myGroup.valid">Submit</button>
     <a color="accent" (click)="forgetPassword()"  fxLayoutAlign="center center" style="cursor:pointer" *ngIf="!forgetPasswords">Forget Password</a>
    </div>
-   <mat-spinner *ngIf="!loadingBar" ></mat-spinner>
+   <mat-spinner *ngIf="loadingBar | async" ></mat-spinner>
   </form>
 
 </section>
