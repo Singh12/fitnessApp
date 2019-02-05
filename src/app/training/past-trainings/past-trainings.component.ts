@@ -3,7 +3,8 @@ import { TrainingService } from '../training.service';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Exercise } from '../exercise.model';
 import { Subscription } from 'rxjs';
-
+import { Store } from '@ngrx/store';
+import * as fromTraining from '../training.reducer';
 @Component({
   selector: 'app-past-trainings',
   templateUrl: './past-trainings.component.html',
@@ -15,14 +16,12 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
   displayedColumns = ['date', 'name', 'calories', 'duration', 'state'];
   dataSource = new MatTableDataSource<Exercise>();
   private exchangedSubscription: Subscription;
-  constructor(private passedTrainingData: TrainingService) { }
+  constructor(private passedTrainingData: TrainingService, private store: Store<fromTraining.State>) { }
 
   ngOnInit() {
-   this.exchangedSubscription = this.passedTrainingData.finishedExercisesChanged.subscribe(
-      (exercises: Exercise[]) => {
-        this.dataSource.data = exercises;
-      }
-    );
+   this.store.select(fromTraining.getFinishedExercise).subscribe(
+     ex => this.dataSource.data = ex
+   );
     this.passedTrainingData.fetchExercisesCompleteDetails();
   }
 

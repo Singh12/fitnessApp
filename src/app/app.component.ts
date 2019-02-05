@@ -15,13 +15,13 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.authService.authLoginLogout();
     // Code for on refresh expire
-    // this.subscription = this.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationStart) {
-    //     browserRefresh = !this.router.navigated;
-    //     if (browserRefresh) {
-    //       this.authService.logOut();
-    //     }
-    //   }
-    // });
+    this.subscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        browserRefresh = !this.router.navigated;
+        if (browserRefresh) {
+          this.authService.logOut();
+        }
+      }
+    });
   }
 }

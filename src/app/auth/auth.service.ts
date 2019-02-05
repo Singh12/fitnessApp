@@ -1,4 +1,3 @@
-import { User } from './user.model';
 import { AuthData } from './auth-data.model';
 import { Subject, Subscription } from 'rxjs';
 import { Injectable, OnDestroy } from '@angular/core';
@@ -12,25 +11,23 @@ import * as UI from '../shaired/ui.action';
 import * as AUTH from '../auth.action';
 @Injectable()
 export class AuthService implements OnDestroy {
-    private user: User;
     userSub: Subscription;
     autValidation = new Subject<boolean>();
-    private isAuthenticated = false;
     constructor(private router: Router,
         private afAuth: AngularFireAuth,
         private trainingService: TrainingService,
         private uiService: UiService,
         private store: Store<fromRoot.State>) { }
     registerUser(authData: AuthData) {
-        this.uiService.progressBarr.next(false);
+        this.store.dispatch(new UI.StartLoading());
         this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
             authData.email,
             authData.password
         ).then(result => {
-            this.uiService.progressBarr.next(true);
+            this.store.dispatch(new UI.StopLoading());
         }).catch(error => {
-            this.uiService.progressBarr.next(true);
             this.uiService.showSnackBar(error.message, null, 3000);
+            this.store.dispatch(new UI.StopLoading());
         });
     }
     // Univarsal setup for login or log out button
@@ -43,7 +40,6 @@ export class AuthService implements OnDestroy {
         this.userSub = this.afAuth.user.subscribe(
             (user) => {
                 if (user) {
-                    console.log(user);
                     this.store.dispatch(new AUTH.Authenticated());
                     this.router.navigate(['/training']);
                 } else {
